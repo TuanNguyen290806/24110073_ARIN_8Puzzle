@@ -4,10 +4,11 @@ import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, urlparse
-
 from BFS import BFS
+from DFS import DFS
 
 ROOT = Path(__file__).parent
+ALGORITHMS = {"bfs": BFS, "dfs": DFS}
 
 
 class EightPuzzle:
@@ -44,10 +45,10 @@ def parse_tiles(text):
     return tuple(tiles) if sorted(tiles) == list(range(9)) else None
 
 
-def solve(tiles):
+def solve(tiles, search):
     problem = EightPuzzle(tiles)
     started = time.perf_counter()
-    moves = BFS(problem)
+    moves = search(problem)
     seconds = time.perf_counter() - started
     if moves is None:
         return {"moves": None, "states": None, "seconds": seconds}
@@ -74,17 +75,20 @@ class Handler(BaseHTTPRequestHandler):
         if url.path == "/":
             self.reply(200, "text/html; charset=utf-8", (ROOT / "index.html").read_bytes())
         elif url.path == "/solve":
-            tiles = parse_tiles(parse_qs(url.query).get("tiles", [""])[0])
+            query = parse_qs(url.query)
+            tiles = parse_tiles(query.get("tiles", [""])[0])
+            search = ALGORITHMS.get(query.get("algo", ["bfs"])[0])
             if tiles is None:
                 self.reply_json(400, {"error": "Use each number from 0 to 8 exactly once."})
+            elif search is None:
+                self.reply_json(400, {"error": "Unknown algorithm."})
             else:
-                self.reply_json(200, solve(tiles))
+                self.reply_json(200, solve(tiles, search))
         else:
             self.reply_json(404, {"error": "Not found."})
 
     def log_message(self, *args):
         pass
-
 
 if __name__ == "__main__":
     port = int(sys.argv[1]) if len(sys.argv) > 1 else 8000
