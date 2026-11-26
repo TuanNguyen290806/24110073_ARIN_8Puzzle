@@ -63,14 +63,14 @@ class EightPuzzle:
     def actions(self, state):
         row, col = divmod(state.index(0), 3)
         acts = []
-        if row > 0: acts.append("Len")
-        if row < 2: acts.append("Xuong")
-        if col > 0: acts.append("Trai")
-        if col < 2: acts.append("Phai")
+        if row > 0: acts.append("Up")
+        if row < 2: acts.append("Down")
+        if col > 0: acts.append("Left")
+        if col < 2: acts.append("Right")
         return acts
     def result(self, state, action):
         i = state.index(0)
-        j = i + {"Len": -3, "Xuong": 3, "Trai": -1, "Phai": 1}[action]
+        j = i + {"Up": -3, "Down": 3, "Left": -1, "Right": 1}[action]
         s = list(state)
         s[i], s[j] = s[j], s[i]
         return tuple(s)
@@ -78,15 +78,15 @@ class EightPuzzle:
 def main():
     tiles = tuple(map(int, input("Nhap 9 o: ").split()))
     if sorted(tiles) != list(range(9)):
-        print("Nhap sai: moi so tu 0 den 8 xuat hien dung 1 lan.")
+        print("Invalid input: every digit from 0 to 8 appears only ONCE.")
         return
     problem = EightPuzzle(tiles)
     result = DFS(problem)
     if result is None:
-        print("Khong giai duoc.")
+        print("Unsolvable.")
     else:
-        print("Dap an:", result)
-        print("So buoc di:", len(result))
+        print("Result:", result)
+        print("Steps:", len(result))
 
 if __name__ == "__main__":
     main()
