@@ -6,7 +6,7 @@ class Node:
         self.parent = parent
         self.action = action
 
-class Queue:  # FIFO
+class Queue:
     def __init__(self):
         self.items = deque()
         self.states = set()         
