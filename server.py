@@ -6,13 +6,14 @@ from pathlib import Path
 from urllib.parse import parse_qs, urlparse
 from BFS import BFS
 from DFS import DFS
-
+from UCS import UCS
 ROOT = Path(__file__).parent
-ALGORITHMS = {"bfs": BFS, "dfs": DFS}
+ALGORITHMS = {"bfs": BFS, "dfs": DFS, "ucs": UCS}
 
 
 class EightPuzzle:
     GOAL = (1, 2, 3, 4, 5, 6, 7, 8, 0)
+    COSTS = {"Up": 1, "Down": 1, "Left": 2, "Right": 2}
 
     def __init__(self, initial):
         self.initial_state = tuple(initial)
@@ -36,6 +37,8 @@ class EightPuzzle:
         s[i], s[j] = s[j], s[i]
         return tuple(s)
 
+    def step_cost(self, state, action):
+        return self.COSTS[action]
 
 def parse_tiles(text):
     try:

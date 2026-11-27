@@ -108,6 +108,8 @@ def main():
     else:
         print("Result:", result)
         print("Steps:", len(result))
+        cost = sum(problem.step_cost(None, a) for a in result)
+        print("Total cost:", cost)
 if __name__ == "__main__":
     main()
 

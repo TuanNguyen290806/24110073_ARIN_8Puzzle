@@ -104,6 +104,7 @@ button.tile.movable:hover{background:var(--accent);color:var(--on-accent)}
       <div class="seg" role="radiogroup" aria-label="Algorithm">
         <label><input type="radio" name="algo" value="bfs" checked><span>Breadth-first</span></label>
         <label><input type="radio" name="algo" value="dfs"><span>Depth-first</span></label>
+        <label><input type="radio" name="algo" value="ucs"><span>Uniform-cost</span></label>
       </div>
     </section>
     </div>
@@ -190,7 +191,8 @@ function setStart(s) { clearSolution(); start = s; $("#tilesMsg").textContent = 
 async function solve() {
   clearSolution();
   const id = req, btn = $("#solve");
-  btn.disabled = true; btn.textContent = "Solving…"; setResult("Running " + (algo === "bfs" ? "BFS" : "DFS") + "…");
+  const name = algo === "bfs" ? "BFS" : algo === "dfs" ? "DFS" : "UCS";
+  btn.disabled = true; btn.textContent = "Solving…"; setResult("Running " + name + "…");
   try {
     const r = await fetch("/solve?algo=" + algo + "&tiles=" + start.join(","));
     const d = await r.json();
